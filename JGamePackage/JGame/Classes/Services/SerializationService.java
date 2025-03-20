@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,6 +13,8 @@ import java.util.Objects;
 
 import JGamePackage.JGame.Classes.Instance;
 import JGamePackage.JGame.Classes.Abstracts.AbstractImage;
+import JGamePackage.JGame.Classes.Scripts.Script;
+import JGamePackage.JGame.Classes.Scripts.Writable.WritableScript;
 import JGamePackage.JGame.Types.PointObjects.Vector2;
 import JGamePackage.lib.JSONSimple.JSONArray;
 import JGamePackage.lib.JSONSimple.JSONObject;
@@ -75,6 +78,10 @@ public class SerializationService extends Service {
         //checking for class-specific fields that have getters/setters instead of fields
         if (inst instanceof AbstractImage) {
             obj.put("ImagePath", ((AbstractImage) inst).GetImagePath());
+        }
+
+        if (inst instanceof Script && ((Script) inst).GetWritableClassName() != null) {
+            obj.put("WritableClassName", ((Script) inst).GetWritableClassName());
         }
 
         obj.put("class", inst.getClass().getName());
@@ -159,10 +166,10 @@ public class SerializationService extends Service {
         return instances;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends Instance> T JSONObjectToInstance(JSONObject obj) {
         try {
             Class<?> clazz = Class.forName((String) obj.get("class"));
-            @SuppressWarnings("unchecked")
             T inst = (T) clazz.getDeclaredConstructor().newInstance();
 
             for (Object key : obj.keySet()) {
@@ -189,8 +196,26 @@ public class SerializationService extends Service {
                 ((AbstractImage) inst).SetImage((String) obj.get("ImagePath"));
             }
 
+            if (inst instanceof Script) {
+                Script script = (Script) inst;
+                String className = (String) obj.get("WritableClassName");
+                script.SetWritableClassName(className);
+
+                if (className != null) {
+                    try {
+                        script.WritableClass = (Class<? extends WritableScript>) Class.forName(className);
+                    } catch (ClassNotFoundException e) {
+                        System.out.println("Error loading script with class name "+className+", loading was skipped for this script.");
+                    }
+                }
+
+                //if (script.WritableClass != null) {
+                    //game.ScriptService.LoadScript(script);
+                //}
+            }
+
             return inst;
-        } catch (Exception e) {
+        } catch (IllegalAccessException | NoSuchFieldException | InvocationTargetException | InstantiationException | ClassNotFoundException | NoSuchMethodException e) {
             e.printStackTrace();
             return null;
         }

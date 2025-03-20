@@ -1,6 +1,5 @@
 package JGamePackage.JGame.Classes.Services;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import JGamePackage.JGame.Classes.Scripts.Script;
@@ -9,7 +8,6 @@ import JGamePackage.lib.CustomError.CustomError;
 import JGamePackage.lib.Signal.SignalWrapper;
 
 public class ScriptService extends Service {
-    private CustomError ErrorNoDotJGame = new CustomError("Unable to load scripts: unable to find %s.", CustomError.ERROR, "JGamePackage");
     private CustomError WarningScriptLoadFail = new CustomError("Error while trying to load Script %s, the loading of this script will be skipped.", CustomError.WARNING, "JGamePackage");
 
     private ArrayList<Script> loadedScripts = new ArrayList<>();
@@ -18,7 +16,7 @@ public class ScriptService extends Service {
     private void loadScript(Script script) {
         WritableScript writScript;
         try {
-            writScript = script.GetWritableClass().getDeclaredConstructor().newInstance();
+            writScript = script.WritableClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             WarningScriptLoadFail.Throw(new String[] {script.Name});
             return;
@@ -79,6 +77,16 @@ public class ScriptService extends Service {
         }
     }
 
+    /**Attempts to load the given script. Note that all scripts are automatically
+     * loaded upon creation, so this method should only be used to load scripts that
+     * have WritableClasses which are not set using the Script constructor.
+     * 
+     * @param script
+     */
+    public void LoadScript(Script script) {
+        loadScript(script);
+    }
+
     public ScriptService(SignalWrapper<Double> onTick, boolean init) {
         if (!init) return; //dont initialize scripts because of startParams
         loadCreatedScripts();
@@ -87,24 +95,5 @@ public class ScriptService extends Service {
         onTick.Connect(this::runScriptsOnTick);
     }
 
-    @SuppressWarnings("unused")
-    private ProjectRepresentation traceDotJGameDir() {
-        File dotJGame = new File("/.jgame");
-
-        if (!dotJGame.exists()) {
-            ErrorNoDotJGame.Throw(".jgame directory");
-            return null;
-        }
-
-        File projJson = new File("/.jgame/project.json");
-
-        if (!projJson.exists()) {
-            ErrorNoDotJGame.Throw("project.json file");
-            return null;
-        }
-
-        return new ProjectRepresentation(dotJGame, projJson);
-    }
-
-    record ProjectRepresentation(File dotJGame, File projectJSON) {}
+    
 }

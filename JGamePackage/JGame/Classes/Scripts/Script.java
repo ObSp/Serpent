@@ -5,22 +5,24 @@ import java.lang.reflect.InvocationTargetException;
 import JGamePackage.JGame.Classes.Scripts.Writable.WritableScript;
 
 public class Script extends ScriptBase {
-    private Class<? extends WritableScript> writableClass;
+    public Class<? extends WritableScript> WritableClass;
+    private String writableClassName; //For serialization
 
     public Script() {
         super();
     }
     
     public Script(Class<? extends WritableScript> writableClass) {
-        this.writableClass = writableClass;
+        this.WritableClass = writableClass;
+        this.writableClassName = writableClass.getName();
     }
 
-    public Class<? extends WritableScript> GetWritableClass() {
-        return writableClass;
+    public void SetWritableClassName(String path) {
+        writableClassName = path;
     }
 
-    public void SetWritableClass(Class<? extends WritableScript> writableClass) {
-        this.writableClass = writableClass;
+    public String GetWritableClassName() {
+        return writableClassName;
     }
 
     @Override
