@@ -35,7 +35,13 @@ public class ShipController extends WritableScript {
         }
         ship.Rotation = rot;
         shipLookDirection = mousePos.subtract(ship.Position).normalized();
-        shipVelocity = shipVelocity.lerp(shipLookDirection.multiply(10), .01);
+        
+        if (game.InputService.IsMouse1Down()) {
+            shipVelocity = shipVelocity.lerp(shipLookDirection.multiply(20), .005);
+        } else {
+            shipVelocity = shipVelocity.lerp(Vector2.zero, .005);
+        }
+
         ship.Position = ship.Position.add(shipVelocity);
     }
 }

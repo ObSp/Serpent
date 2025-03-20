@@ -11,10 +11,14 @@ public class CameraController extends WritableScript {
     @Override
     public void Start() {
         ship = game.WorldNode.<Image2D>GetChild("Ship");
+
+        game.Services.InputService.OnMouseScroll.Connect(num ->{
+            game.Camera.DepthFactor += ((double) num)*.1;
+        });
     }
 
     @Override
     public void Tick(double dt) {
-        //game.Camera.Position = game.Camera.Position.lerp(ship.Position, .01);
+        game.Camera.Position = game.Camera.Position.lerp(ship.Position, .015 );
     }
 }
