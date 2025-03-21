@@ -1,5 +1,4 @@
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 

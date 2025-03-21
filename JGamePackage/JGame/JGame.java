@@ -132,8 +132,8 @@ public class JGame {
             double curSeconds = curSeconds();
             if (curSeconds-lastTick>=SecondsPerTick) {
                 double delta = curSeconds - lastTick;
-                lastTick = curSeconds;
                 tick(delta);
+                lastTick = delta + (curSeconds() - delta);
             }
         }
     }

@@ -25,6 +25,7 @@ public class ParticleController extends WritableScript {
 
     @Override
     public void Tick(double dt) {
+        System.out.println(dt);
         if (game.TimeService.GetElapsedTicks() % 10 != 0) return;
 
         Box2D particle = particlePool.GetInstance();
@@ -34,6 +35,7 @@ public class ParticleController extends WritableScript {
         game.TimeService.DelaySeconds(3, () -> {
             particlePool.ReturnInstance(particle);
         });
+        game.TimeService.WaitSeconds(.1);
     }
 
     
