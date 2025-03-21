@@ -28,6 +28,8 @@ public class ScriptService extends Service {
         loadedScripts.add(script);
         loadedWritables.add(writScript);
 
+        script.SetRunningWritableScriptInstance(writScript);
+
         new Thread(writScript::Start).start();
     }
 

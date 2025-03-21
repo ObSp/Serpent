@@ -1,1 +1,1 @@
-{"files.exclude":{"JGamePackage":true,".jgame":false}}
+{"files.exclude":{"JGamePackage":false,".jgame":true}}

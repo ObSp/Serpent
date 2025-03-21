@@ -2,6 +2,7 @@ package Scripts;
 
 import JGamePackage.JGame.Classes.Scripts.Writable.WritableScript;
 import JGamePackage.JGame.Classes.World.Image2D;
+import JGamePackage.JGame.Types.PointObjects.Vector2;
 
 
 public class CameraController extends WritableScript {
@@ -19,6 +20,7 @@ public class CameraController extends WritableScript {
 
     @Override
     public void Tick(double dt) {
-        game.Camera.Position = game.Camera.Position.lerp(ship.Position, .015 );
+        if (game.TimeService.GetElapsedTicks() < 50) return;
+        game.Camera.Position = game.Camera.Position.lerp(ship.Position.add(ship.<Vector2>GetCProp("Velocity").multiply(80)), .015 );
     }
 }

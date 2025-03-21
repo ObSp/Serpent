@@ -3,9 +3,13 @@ package JGamePackage.JGame.Classes.Scripts;
 import java.lang.reflect.InvocationTargetException;
 
 import JGamePackage.JGame.Classes.Scripts.Writable.WritableScript;
+import JGamePackage.lib.CustomError.CustomError;
 
 public class Script extends ScriptBase {
+    private static CustomError WarningRunningWritableSetFailed = new CustomError("Unable to set the running writable script instance of script %s: a running writable script instance is already attached to this script,", CustomError.WARNING, "JGamePackage");
+
     public Class<? extends WritableScript> WritableClass;
+    private WritableScript runningInstance;
     private String writableClassName; //For serialization
 
     public Script() {
@@ -19,6 +23,18 @@ public class Script extends ScriptBase {
 
     public void SetWritableClassName(String path) {
         writableClassName = path;
+    }
+
+    public void SetRunningWritableScriptInstance(WritableScript s) {
+        if (runningInstance != null) {
+            WarningRunningWritableSetFailed.Throw(this.Name);
+            return;
+        }
+        runningInstance = s;
+    }
+
+    public WritableScript GetRunningWritableScriptInstance() {
+        return runningInstance;
     }
 
     public String GetWritableClassName() {
