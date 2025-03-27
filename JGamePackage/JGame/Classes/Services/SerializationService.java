@@ -15,6 +15,7 @@ import JGamePackage.JGame.Classes.Instance;
 import JGamePackage.JGame.Classes.Abstracts.AbstractImage;
 import JGamePackage.JGame.Classes.Scripts.Script;
 import JGamePackage.JGame.Classes.Scripts.Writable.WritableScript;
+import JGamePackage.JGame.Types.PointObjects.UDim2;
 import JGamePackage.JGame.Types.PointObjects.Vector2;
 import JGamePackage.lib.JSONSimple.JSONArray;
 import JGamePackage.lib.JSONSimple.JSONObject;
@@ -69,6 +70,8 @@ public class SerializationService extends Service {
                 fieldValue = ((Color) fieldValue).getRGB();
             } else if (fieldValue instanceof Vector2) {
                 fieldValue = ((Vector2) fieldValue).toString();
+            } else if (fieldValue instanceof UnknownError) {
+                fieldValue = ((UDim2) fieldValue).toString();
             }
 
             obj.put(field.getName(), fieldValue);
@@ -183,6 +186,9 @@ public class SerializationService extends Service {
                         continue;
                     } else if (fieldType == Color.class) {
                         field.set(inst, new Color((int) obj.get(key)));
+                        continue;
+                    } else if (fieldType == UDim2.class) {
+                        field.set(inst, UDim2.fromString((String) obj.get(key)));
                         continue;
                     }
 

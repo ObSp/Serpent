@@ -17,6 +17,20 @@ public class UDim2 extends BasePoint {
         return UDim2.fromScale(vector2.X/screenSize.X, vector2.Y/screenSize.Y);
     }
 
+    public static UDim2 fromString(String s) {
+        String[] stripped = s.replace("(", "").replace(")", "").replace(" ", "").split(";");
+        String x = stripped[0];
+        String y = stripped[1];
+
+        String[] xSplit = x.replace("{", "").replace("}", "").replace(" ", "").split(",");
+        String[] ySplit = y.replace("{", "").replace("}", "").replace(" ", "").split(",");
+
+        UDim xUDim = new UDim(Double.parseDouble(xSplit[0]), Double.parseDouble(xSplit[1]));
+        UDim yUDim = new UDim(Double.parseDouble(ySplit[0]), Double.parseDouble(ySplit[1]));
+
+        return new UDim2(xUDim, yUDim);
+    }
+
 
     public final UDim X;
     public final UDim Y;
@@ -91,6 +105,6 @@ public class UDim2 extends BasePoint {
 
     @Override
     public String toString() {
-        return "({"+X.Scale+", "+X.Absolute+"}, {"+Y.Scale+", "+Y.Absolute+"})";
+        return "({"+X.Scale+", "+X.Absolute+"}; {"+Y.Scale+", "+Y.Absolute+"})";
     }
 }

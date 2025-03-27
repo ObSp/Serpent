@@ -20,12 +20,12 @@ public class ParticleController extends WritableScript {
 
         exhaustParticle.SetParent(null);
 
-        particlePool = new InstancePool<>(exhaustParticle, 30, false, 0);
+        //particlePool = new InstancePool<>(exhaustParticle, 30, false, 0);
     }
 
     @Override
     public void Tick(double dt) {
-        System.out.println(dt);
+        if (true) return;
         if (game.TimeService.GetElapsedTicks() % 10 != 0) return;
 
         Box2D particle = particlePool.GetInstance();
