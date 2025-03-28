@@ -25,11 +25,11 @@ import JGamePackage.lib.Signal.AbstractSignalInstance;
 
 public class SerializationService extends Service {
 
-    public static final int NODE_WORLD_IDENTIFIER = -1;
-    public static final int NODE_UI_IDENTIFIER = -2;
-    public static final int STORAGE_WORLD_IDENTIFIER = -3;
-    public static final int NODE_SCRIPT_IDENTIFIER = -4;
-    public static final int NULL_IDENTIFIER = -5;
+    public final int NODE_WORLD_IDENTIFIER = -1;
+    public final int NODE_UI_IDENTIFIER = -2;
+    public final int STORAGE_WORLD_IDENTIFIER = -3;
+    public final int NODE_SCRIPT_IDENTIFIER = -4;
+    public final int NULL_IDENTIFIER = -5;
 
     @SuppressWarnings("unused")
     private List<String> instantiateIgnoreList = List.of("Node");
@@ -70,7 +70,7 @@ public class SerializationService extends Service {
                 fieldValue = ((Color) fieldValue).getRGB();
             } else if (fieldValue instanceof Vector2) {
                 fieldValue = ((Vector2) fieldValue).toString();
-            } else if (fieldValue instanceof UnknownError) {
+            } else if (fieldValue instanceof UDim2) {
                 fieldValue = ((UDim2) fieldValue).toString();
             }
 
@@ -93,7 +93,7 @@ public class SerializationService extends Service {
     }
     
     @SuppressWarnings("unchecked")
-    public JSONArray InstanceArrayToJSONArray(Instance[] instances) {
+    public JSONArray InstanceArrayToJSONArray(Instance[] instances, HashMap<Integer, Instance> options) {
         JSONArray arr = new JSONArray();
 
         HashMap<Instance, Integer> instanceIndexMap = new HashMap<>();
@@ -116,7 +116,7 @@ public class SerializationService extends Service {
                 if (parentIdentifierIndex == null) {
                     if (parent == game.WorldNode) {
                         parentIdentifierIndex = NODE_WORLD_IDENTIFIER;
-                    } else if (parent == game.UINode) {
+                    } else if (parent == game.UINode || (options != null ? parent == options.get(NODE_UI_IDENTIFIER) : false)) {
                         parentIdentifierIndex = NODE_UI_IDENTIFIER;
                     } else if (parent == game.StorageNode) {
                         parentIdentifierIndex = STORAGE_WORLD_IDENTIFIER;
@@ -138,7 +138,8 @@ public class SerializationService extends Service {
         return arr;
     }
 
-    public Instance[] JSONArrayToInstanceArray(JSONArray arr) {
+    public Instance[] JSONArrayToInstanceArray(JSONArray arr, HashMap<Integer, Instance> options) {
+        if (options == null) options = new HashMap<>();
         Instance[] instances = new Instance[arr.size()];
 
         for (int i = 0; i < arr.size(); i++) {
@@ -158,7 +159,8 @@ public class SerializationService extends Service {
             } else if (parentIdentifier == NODE_WORLD_IDENTIFIER) {
                 inst.SetParent(game.WorldNode);
             } else if (parentIdentifier == NODE_UI_IDENTIFIER) {
-                inst.SetParent(game.UINode);
+                Instance replacement = options.get(NODE_UI_IDENTIFIER);
+                inst.SetParent(replacement != null ? replacement : game.UINode);
             } else if (parentIdentifier == STORAGE_WORLD_IDENTIFIER) {
                 inst.SetParent(game.StorageNode);
             } else if (parentIdentifier == NODE_SCRIPT_IDENTIFIER) {
@@ -228,8 +230,8 @@ public class SerializationService extends Service {
     }
 
     //IO methods
-    public void WriteInstanceArrayToFile(Instance[] instances, String path) {
-        JSONArray arr = InstanceArrayToJSONArray(instances);
+    public void WriteInstanceArrayToFile(Instance[] instances, String path, HashMap<Integer, Instance> options) {
+        JSONArray arr = InstanceArrayToJSONArray(instances, options);
         
         try (FileWriter writer = new FileWriter(path)){
             writer.write(arr.toJSONString());
@@ -239,11 +241,11 @@ public class SerializationService extends Service {
         }
     }
 
-    public Instance[] ReadInstanceArrayFromFile(String path) {
+    public Instance[] ReadInstanceArrayFromFile(String path, HashMap<Integer, Instance> options) {
         try {
             JSONParser parser = new JSONParser();
             JSONArray arr = (JSONArray) parser.parse(new FileReader(path));
-            return JSONArrayToInstanceArray(arr);
+            return JSONArrayToInstanceArray(arr, options);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

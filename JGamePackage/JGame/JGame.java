@@ -88,7 +88,7 @@ public class JGame {
         renderer = new Renderer(this);
 
         if (this.StudioService.IsStudioProject()) {
-            this.SerializationService.ReadInstanceArrayFromFile(".jgame/world.json");
+            this.SerializationService.ReadInstanceArrayFromFile(".jgame/world.json", null);
         }
 
         Promise.await(this.start(params));
