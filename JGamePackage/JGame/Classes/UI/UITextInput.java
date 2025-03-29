@@ -3,8 +3,6 @@ package JGamePackage.JGame.Classes.UI;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.Shape;
 
 import JGamePackage.JGame.Classes.Rendering.RenderUtil;
 import JGamePackage.JGame.Types.PointObjects.Vector2;
@@ -65,12 +63,12 @@ public class UITextInput extends UIText {
             renderColor = new Color(PlaceholderColor.getRed(), PlaceholderColor.getGreen(), PlaceholderColor.getBlue(), renderColor.getAlpha());
         }
 
-        Shape oldClip = graphics.getClip();
-        graphics.setClip(new Rectangle((int) renderPos.X, (int)renderPos.Y, (int)renderSize.X,(int) renderSize.Y));
+        //Shape oldClip = graphics.getClip();
+        //graphics.setClip(new Rectangle((int) renderPos.X, (int)renderPos.Y, (int)renderSize.X,(int) renderSize.Y));
 
         RenderUtil.drawText(renderText, renderSize, renderPos, renderColor, FontSize, FontStyle, FontName, CustomFont, TextScaled, HorizontalTextAlignment, VerticalTextAlignment, focused && showInTextCursor ? "I" : "");
 
-        graphics.setClip(oldClip);
+        //graphics.setClip(oldClip);
     }
 
     @Override

@@ -94,6 +94,14 @@ public class UDim2 extends BasePoint {
         return new UDim2(0, X.Absolute, 0, Y.Absolute);
     }
 
+    public Vector2 ToVector2FromScale() {
+        return new Vector2(X.Scale, Y.Scale);
+    }
+
+    public Vector2 ToVector2FromAbsolute() {
+        return new Vector2(X.Absolute, Y.Absolute);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof UDim2) {

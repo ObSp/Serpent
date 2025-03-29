@@ -12,6 +12,8 @@ public class Script extends ScriptBase {
     private WritableScript runningInstance;
     private String writableClassName; //For serialization
 
+    public boolean Disabled = false;
+
     public Script() {
         super();
     }

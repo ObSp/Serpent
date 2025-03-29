@@ -2,6 +2,7 @@ package Scripts;
 
 import java.awt.event.KeyEvent;
 
+import Classes.Util;
 import JGamePackage.JGame.Classes.Scripts.Writable.WritableScript;
 import JGamePackage.JGame.Classes.World.Image2D;
 import JGamePackage.JGame.Types.PointObjects.Vector2;
@@ -13,15 +14,6 @@ public class ShipController extends WritableScript {
 
     Vector2 shipVelocity = Vector2.zero;
 
-    private double lookAt(Vector2 origin, Vector2 target) {
-        double xDiff = target.X-origin.X;
-        if (xDiff == 0){ //not sure if this can cause any potential errors, but avoids the arithmetic "tried to divide by zere/NaN" error
-            return 0.0;
-        }
-        double yDiff = target.Y-origin.Y;
-        return Math.atan(yDiff/xDiff);
-    }
-
     @Override
     public void Start() {
         ship = game.WorldNode.GetChild("Ship");
@@ -30,8 +22,11 @@ public class ShipController extends WritableScript {
 
     @Override
     public void Tick(double dt) {
+        double dtFactor = dt/game.SecondsPerTick;
+
         Vector2 mousePos = game.InputService.GetMouseWorldPosition();
-        double rot = lookAt(ship.Position, mousePos);
+
+        double rot = Util.lookAt(ship.Position, mousePos);
         if (mousePos.X > ship.Position.X) {
             rot = rot + Math.PI;
         }
@@ -44,7 +39,7 @@ public class ShipController extends WritableScript {
             shipVelocity = shipVelocity.lerp(Vector2.zero, .005);
         }
 
-        ship.Position = ship.Position.lerp(ship.Position.add(shipVelocity), .9);
+        ship.Position = ship.Position.lerp(ship.Position.add(shipVelocity.multiply(dtFactor)), .9);
         ship.SetCProp("Velocity", shipVelocity);
     }
 }

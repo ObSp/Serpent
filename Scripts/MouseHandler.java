@@ -1,5 +1,6 @@
 package Scripts;
 
+import Classes.Signals;
 import JGamePackage.JGame.Classes.Scripts.Writable.WritableScript;
 import JGamePackage.JGame.Classes.UI.UIImage;
 import JGamePackage.JGame.Types.PointObjects.UDim2;
@@ -18,7 +19,10 @@ public class MouseHandler extends WritableScript {
         cursor.PixelPerfect = true;
         cursor.AnchorPoint = Vector2.half;
         cursor.ZIndex = 1000;
+        cursor.Name = "Cursor";
         cursor.SetParent(game.UINode);
+
+        game.InputService.OnMouse1Click.Connect(Signals.FireBullet::Fire);
     }
 
     @Override
